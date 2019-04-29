@@ -32,7 +32,7 @@ namespace rodocop
             // });
             app.UseStaticFiles();
             app.UseDefaultFiles();
-            app.UseCors();
+            app.UseCors(builder => builder.WithOrigins("https://a2klabs.azurewebsites.net", "https://localhost:5001","https://localhost:5002","https://localhost:5003","https://localhost:5004"));
         }
     }
 }
