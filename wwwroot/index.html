@@ -79,9 +79,10 @@
     <script>
         function deploy() 
         {
-            console.log("pase");
+            //console.log("pase");
             document.getElementById('btnDeploy').innerHTML = '<a  class="btn btn-lg btn-secondary"> <img style="width: 25px;" src="/imgs/loading.gif" /> </a>'; 
             clickDeploy();
+            
         }
 
         $(document).ready(function () {
@@ -252,23 +253,21 @@
             url: "https://a2klab.azurewebsites.net/api/RodoCop/" + $("#ticket").val(),  
             contentType: "application/json; charset=utf-8",  
             dataType: "json",  
+            headers : {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'},
             success: function (data) {  
-                alert(JSON.stringify(data));                  
-                $("#DIV").html('');   
-                var DIV = '';  
-                // $.each(data, function (i, item) {  
-                //     var rows = "<tr>" +  
-                //         "<td id='RegdNo'>" + item.regNo + "</td>" +  
-                //         "<td id='Name'>" + item.name + "</td>" +  
-                //         "<td id='Address'>" + item.address + "</td>" +  
-                //         "<td id='PhoneNo'>" + item.phoneNo + "</td>" +  
-                //         "<td id='AdmissionDate'>" + Date(item.admissionDate,  
-                //          "dd-MM-yyyy") + "</td>" +  
-                //         "</tr>";  
-                //     $('#Table').append(rows);  
-                // }); //End of foreach Loop   
+                //alert(JSON.stringify(data));                  
+                var zip_file_path = "https://a2klab.azurewebsites.net/" + data //put inside "" your path with file.zip
+                var zip_file_name = data //put inside "" file name or something
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                a.href = zip_file_path;
+                a.download = zip_file_name;
+                a.click();
+                document.body.removeChild(a); 
                 console.log(data);  
-            }, //End of AJAX Success function  
+                document.getElementById('btnDeploy').innerHTML = '<a style="color:dimgrey" onclick="deploy()" class="btn btn-lg btn-secondary">Deploy </a>'; 
+            },   
   
             failure: function (data) {  
                 alert(data.responseText);  
