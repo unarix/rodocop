@@ -1,0 +1,14 @@
+/home/unarix/Documentos/code/rodocop/bin/Debug/netcoreapp2.1/rodocop.deps.json
+/home/unarix/Documentos/code/rodocop/bin/Debug/netcoreapp2.1/rodocop.runtimeconfig.json
+/home/unarix/Documentos/code/rodocop/bin/Debug/netcoreapp2.1/rodocop.runtimeconfig.dev.json
+/home/unarix/Documentos/code/rodocop/bin/Debug/netcoreapp2.1/rodocop.dll
+/home/unarix/Documentos/code/rodocop/bin/Debug/netcoreapp2.1/rodocop.pdb
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.csprojAssemblyReference.cache
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.csproj.CoreCompileInputs.cache
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.RazorAssemblyInfo.cache
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.RazorAssemblyInfo.cs
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.AssemblyInfoInputs.cache
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.AssemblyInfo.cs
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.RazorTargetAssemblyInfo.cache
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.dll
+/home/unarix/Documentos/code/rodocop/obj/Debug/netcoreapp2.1/rodocop.pdb

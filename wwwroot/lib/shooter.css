@@ -1,0 +1,215 @@
+html,
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  width: 100%;
+}
+
+body {
+  background: url(http://wallpaper.zone/img/3668561.png) no-repeat center;
+  background-size: cover;
+  cursor: crosshair;
+  overflow: hidden;
+}
+
+body:active .duck:active {
+  box-shadow: red 0px 0px 0px 3000px;
+}
+
+h2 {
+  position: absolute;
+  font-family: sans-serif;
+  top: 0px;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  padding: 5%;
+}
+
+.duck {
+  position: absolute;
+  left: -150px;
+  right: 0px;
+  height: 0px;
+  border-radius: 100%;
+  z-index: 10;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+}
+.duck a {
+  display: block;
+  cursor: crosshair;
+  transition: all 0.6s;
+  background: no-repeat center url(/imgs/rodo.png);
+  background-size: cover;
+}
+.duck a:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+.duck:nth-child(1) {
+  top: 52%;
+  -webkit-animation: fly 15s 7.4s linear infinite;
+          animation: fly 15s 7.4s linear infinite;
+}
+.duck:nth-child(1) a {
+  width: 136px;
+  -webkit-animation: float 2.5s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2.5s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(2) {
+  top: 52%;
+  -webkit-animation: fly 8s 4.8s linear infinite;
+          animation: fly 8s 4.8s linear infinite;
+}
+.duck:nth-child(2) a {
+  width: 97px;
+  -webkit-animation: float 2.2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2.2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(3) {
+  top: 46%;
+  -webkit-animation: fly 10s 16.8s linear infinite;
+          animation: fly 10s 16.8s linear infinite;
+}
+.duck:nth-child(3) a {
+  width: 117px;
+  -webkit-animation: float 2.3s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2.3s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(4) {
+  top: 54%;
+  -webkit-animation: fly 8s 15.5s linear infinite;
+          animation: fly 8s 15.5s linear infinite;
+}
+.duck:nth-child(4) a {
+  width: 141px;
+  -webkit-animation: float 2.2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2.2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(5) {
+  top: 58%;
+  -webkit-animation: fly 12s 12.5s linear infinite;
+          animation: fly 12s 12.5s linear infinite;
+}
+.duck:nth-child(5) a {
+  width: 142px;
+  -webkit-animation: float 2.3s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2.3s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(6) {
+  top: 6%;
+  -webkit-animation: fly 10s 6s linear infinite;
+          animation: fly 10s 6s linear infinite;
+}
+.duck:nth-child(6) a {
+  width: 112px;
+  -webkit-animation: float 3.5s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 3.5s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(7) {
+  top: 46%;
+  -webkit-animation: fly 9s 13.9s linear infinite;
+          animation: fly 9s 13.9s linear infinite;
+}
+.duck:nth-child(7) a {
+  width: 150px;
+  -webkit-animation: float 3.3s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 3.3s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(8) {
+  top: 38%;
+  -webkit-animation: fly 10s 0.9s linear infinite;
+          animation: fly 10s 0.9s linear infinite;
+}
+.duck:nth-child(8) a {
+  width: 112px;
+  -webkit-animation: float 2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(9) {
+  top: 43%;
+  -webkit-animation: fly 9s 19.8s linear infinite;
+          animation: fly 9s 19.8s linear infinite;
+}
+.duck:nth-child(9) a {
+  width: 132px;
+  -webkit-animation: float 2.2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 2.2s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+.duck:nth-child(10) {
+  top: 33%;
+  -webkit-animation: fly 10s 10.2s linear infinite;
+          animation: fly 10s 10.2s linear infinite;
+}
+.duck:nth-child(10) a {
+  width: 70px;
+  -webkit-animation: float 3.4s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+          animation: float 3.4s infinite cubic-bezier(0.58, 0.14, 0.46, 0.92);
+}
+
+@-webkit-keyframes fly {
+  0% {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+  }
+}
+
+@keyframes fly {
+  0% {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+            transform: translateX(100%);
+  }
+}
+@-webkit-keyframes float {
+  0% {
+    -webkit-transform: translateY(40%);
+            transform: translateY(40%);
+  }
+  50% {
+    -webkit-transform: translateY(-40%);
+            transform: translateY(-40%);
+  }
+  100% {
+    -webkit-transform: translateY(40%);
+            transform: translateY(40%);
+  }
+}
+@keyframes float {
+  0% {
+    -webkit-transform: translateY(40%);
+            transform: translateY(40%);
+  }
+  50% {
+    -webkit-transform: translateY(-40%);
+            transform: translateY(-40%);
+  }
+  100% {
+    -webkit-transform: translateY(40%);
+            transform: translateY(40%);
+  }
+}
+.duck:target {
+  -webkit-animation: none;
+          animation: none;
+}

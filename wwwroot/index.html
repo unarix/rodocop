@@ -1,0 +1,251 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/lib/favicon.ico">
+    <title>Rodocop 0.1</title>
+    <!-- Bootstrap -->
+    <link href="/lib/Bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/Bootstrap/css/cover.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">Rodocop</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link active" href="index.html">Home</a>
+                <a class="nav-link" href="botonaso.html">Rodokiller</a>
+                <a class="nav-link" href="https://a2klab.azurewebsites.net/">a2kLab</a>
+                </nav>
+            </div>
+        </header>
+        
+        <form method="post" enctype="multipart/form-data">
+            <main role="main" class="inner cover">
+                <h1 class="cover-heading">Hola amigo</h1>
+                <p class="lead">Este servicio nos facilita realizar las acciones burocraticas impuestas por Rodo, el policia mas malvado de Oracle City; Mete el numero de ticket, subi los scripts y dale al Botonaso.</p>
+                <p class="lead"></p>
+
+                <div class="container">
+                    <div class="form-group">
+                        <div class="col">
+                            <input type="number" max="9999" id="ticket" class="form-control form-control-sm" placeholder="#ticket" >
+                        </div>
+                    </div>
+                    
+                    <div class="row" style="cursor: pointer">
+                        <div class="col-sm">
+                            <div id="fileBasketQry" class="filebasket">
+                                Querys en orden.
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div id="fileBasketBkp" class="filebasket">
+                                Backups en orden.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </form>
+
+        <footer class="mastfoot mt-auto">
+            <p class="lead" id="btnDeploy">
+                <a style="color:dimgrey" onclick="deploy()" class="btn btn-lg btn-secondary">Deploy </a>
+            </p>
+        </footer>
+
+        <div id="alert_ticket" class="alert alert-danger alert-fixed" role="alert">
+            Completa el numero de ticket antes de cargar scripts
+            <button type="button" class="close" aria-label="Close" onclick="hideAlert()"">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="/lib/Popper/popper.min.js"></script>
+    <script src="/lib/Bootstrap/js/bootstrap.min.js"></script>
+
+    <script>
+        function deploy() 
+        {
+            console.log("pase");
+            document.getElementById('btnDeploy').innerHTML = '<a  class="btn btn-lg btn-secondary"> <img style="width: 25px;" src="/imgs/loading.gif" /> </a>'; 
+        }
+
+        $(document).ready(function () {
+
+            $('#alert_ticket').hide();
+
+            $("#fileBasketQry").on("dragenter", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                $("#fileBasketQry").css('color','#cb42f4')
+            });
+
+            $("#fileBasketQry").on("dragover", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            });
+
+            $("#fileBasketQry").on("drop", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            });
+
+            $("#fileBasketBkp").on("dragenter", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                $("#fileBasketBkp").css('color','#74f442')
+            });
+
+            $("#fileBasketBkp").on("dragover", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            });
+
+            $("#fileBasketBkp").on("drop", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+            });
+
+        });
+
+        function hideAlert()
+        {
+            $('#alert_ticket').hide();
+        }
+
+        function showAlert()
+        {
+            $('#alert_ticket').show();
+        }
+
+        function validateTicket(){
+            if( $("#ticket").val() == ""){
+                showAlert();
+                return false;
+            }
+            else
+            {
+                hideAlert();
+                return true;
+            }
+        }
+
+        $("#fileBasketQry").on("drop", function (evt) {
+            
+            if (validateTicket())
+            {
+                evt.preventDefault();
+                evt.stopPropagation();
+                var files = evt.originalEvent.dataTransfer.files;
+                var fileNames = "";
+                if (files.length > 0) {
+                    fileNames += "Uploading <br/>"
+                    for (var i = 0; i < files.length; i++) {
+                        fileNames += files[i].name + "<br />";
+                    }
+                }
+                $("#fileBasketQry").html(fileNames)
+
+                // Agrego los archivos
+                var data = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    data.append(files[i].name, files[i]);
+                }
+
+                // Agrego el numero de ticket
+                data.append("ticket", $("#ticket").val())
+
+                // Agrego el folder
+                data.append("folder", "Querys")
+
+                $.ajax({
+                    type: "POST",
+                    url: "https://localhost:5001/api/RodoCop",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (message) {
+                        $("#fileBasketQry").html(message);
+                    },
+                    error: function () {
+                        $("#fileBasketQry").html
+                        ("There was error uploading files!");
+                    },
+                    beforeSend: function () {
+                        $("#progress").show();
+                    },
+                    complete: function () {
+                        $("#progress").hide();
+                    }
+                });
+            }
+        });
+
+        $("#fileBasketBkp").on("drop", function (evt) {
+            
+            if (validateTicket())
+            {
+                evt.preventDefault();
+                evt.stopPropagation();
+                var files = evt.originalEvent.dataTransfer.files;
+                var fileNames = "";
+                if (files.length > 0) {
+                    fileNames += "Uploading <br/>"
+                    for (var i = 0; i < files.length; i++) {
+                        fileNames += files[i].name + "<br />";
+                    }
+                }
+                $("#fileBasketBkp").html(fileNames)
+
+                var data = new FormData();
+                for (var i = 0; i < files.length; i++) {
+                    data.append(files[i].name, files[i]);
+                }
+
+                // Agrego el numero de ticket
+                data.append("ticket", $("#ticket").val())
+
+                // Agrego el folder
+                data.append("folder", "Backup")
+
+                $.ajax({
+                    type: "POST",
+                    url: "https://localhost:5001/api/RodoCop",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (message) {
+                        $("#fileBasketBkp").html(message);
+                    },
+                    error: function () {
+                        $("#fileBasketBkp").html
+                        ("There was error uploading files!");
+                    },
+                    beforeSend: function () {
+                        $("#progress").show();
+                    },
+                    complete: function () {
+                        $("#progress").hide();
+                    }
+                });
+            }
+        });
+
+
+    </script>
+
+  </body>
+</html>
