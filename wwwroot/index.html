@@ -154,13 +154,11 @@
         function validateTicket(){
             if( $("#ticket").val() == ""){
                 showAlert();
-                resetDeployBtn()
                 return false;
             }
             else
             {
                 hideAlert();
-                resetDeployBtn()
                 return true;
             }
             
@@ -307,6 +305,10 @@
                 } 
     
             });
+        }
+        else
+        {
+            resetDeployBtn();
         }
     }
 
