@@ -63,7 +63,7 @@
         </footer>
 
         <div id="alert_ticket" class="alert alert-danger alert-fixed" role="alert">
-            Completa el numero de ticket antes de cargar scripts
+            Completa el numero de ticket antes de cargar scripts o ejecutar el deploy
             <button type="button" class="close" aria-label="Close" onclick="hideAlert()"">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -154,13 +154,16 @@
         function validateTicket(){
             if( $("#ticket").val() == ""){
                 showAlert();
+                resetDeployBtn()
                 return false;
             }
             else
             {
                 hideAlert();
+                resetDeployBtn()
                 return true;
             }
+            
         }
 
         $("#fileBasketQry").on("drop", function (evt) {
@@ -266,44 +269,45 @@
 
     function clickDeploy(){
         
-        $.ajax({  
-            type: "GET",  
-            url: "https://a2klab.azurewebsites.net/api/RodoCop/" + $("#ticket").val(),  
-            contentType: "application/json; charset=utf-8",  
-            dataType: "json",  
-            headers : {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'},
-            success: function (data) {  
-                //alert(JSON.stringify(data));                  
-                var zip_file_path = "https://a2klab.azurewebsites.net/" + data //put inside "" your path with file.zip
-                var zip_file_name = data //put inside "" file name or something
-                var a = document.createElement("a");
-                document.body.appendChild(a);
-                a.style = "display: none";
-                a.href = zip_file_path;
-                a.download = zip_file_name;
-                a.click();
-                document.body.removeChild(a); 
-                console.log(data);  
-                resetDeployBtn()
-            },   
-  
-            failure: function (data) {  
-                //alert(data.responseText);  
-                $("#errorMsg").text(data.responseText);
-                showAlertError();
-                resetDeployBtn()
+        if (validateTicket())
+        {
+            $.ajax({  
+                type: "GET",  
+                url: "https://a2klab.azurewebsites.net/api/RodoCop/" + $("#ticket").val(),  
+                contentType: "application/json; charset=utf-8",  
+                dataType: "json",  
+                headers : {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'},
+                success: function (data) {  
+                    //alert(JSON.stringify(data));                  
+                    var zip_file_path = "https://a2klab.azurewebsites.net/" + data //put inside "" your path with file.zip
+                    var zip_file_name = data //put inside "" file name or something
+                    var a = document.createElement("a");
+                    document.body.appendChild(a);
+                    a.style = "display: none";
+                    a.href = zip_file_path;
+                    a.download = zip_file_name;
+                    a.click();
+                    document.body.removeChild(a); 
+                    console.log(data);  
+                    resetDeployBtn()
+                },   
+    
+                failure: function (data) {  
+                    //alert(data.responseText);  
+                    $("#errorMsg").text(data.responseText);
+                    showAlertError();
+                    resetDeployBtn()
 
-            }, 
-            error: function (data) {  
-                //alert(data.responseText);  
-                $("#errorMsg").text(data.responseText);
-                showAlertError();
-                resetDeployBtn()
-            } 
-  
-        });
-        
-
+                }, 
+                error: function (data) {  
+                    //alert(data.responseText);  
+                    $("#errorMsg").text(data.responseText);
+                    showAlertError();
+                    resetDeployBtn()
+                } 
+    
+            });
+        }
     }
 
     function resetDeployBtn()
