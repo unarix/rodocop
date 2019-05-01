@@ -1,0 +1,212 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/lib/favicon.ico">
+    <title>Rodocop 0.1</title>
+    <!-- Bootstrap -->
+    <link href="/lib/Bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/Bootstrap/css/cover.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">Rodocop</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link" href="botonaso.html">Rodokiller</a>
+                <a class="nav-link" href="https://a2klab.azurewebsites.net/">a2kLab</a>
+                </nav>
+            </div>
+        </header>
+
+        <main role="main" class="inner cover" style="width: 700px;">
+            <br>
+            <br>
+            <h1 class="cover-heading">El siguiente documento, detalla los pasos a
+                seguir para generar el paquete de deploy
+                sobre una base de datos Oracle.</h1>
+
+            <p>
+                
+                Vamos a poner un ejemplo para la solicitud con número #99999 generada con la
+                herramienta SDM.
+                Todo lo que se muestra debajo es el procedimiento para generar el archivo de
+                despliegue, que luego hay que adjuntar a la solicitud #99999 para poder dar
+                comienzo el deploy.
+            </p>
+            <h2>
+                Procedimiento para la generación
+            </h2>
+            <p>
+                Cada desarrollador en su entorno local(pc) o sobre el área de trabajo que
+                dispongan, tienen que crear un archivo comprimido 999999.rar con la totalidad de
+                los scripts a desplegar.
+                Dentro del paquete comprimido se requiere:
+                 un script con formato _deploy_nroSDM.sql.
+                 un script dentro de la carpeta rollback con formato _rollback_nroSDM.sql.
+                 los scripts con extensión .sql para hacer el deploy.
+                 los scripts para hacer el rollback, dentro de dicha carpeta.
+            </p>
+            <h2>Detalle del contenido del paquete 9999.rar</h2>
+            <p>
+                <strong>_deploy_99999.sql</strong> (es el archivo de configuración para poder ejecutar el
+                deploy de BD desde el IDE de desarrollo, el cual va a generar un archivo de
+                salida con formato <strong>_deploy_sdm_99999_YYYYMMDD_MMSS.LST</strong> para poder rastrear
+                los errores, en caso de existir).
+                <strong>rollback </strong> (carpeta donde se creará el archivo <strong>_rollback_99999.sql</strong> para
+                poder realizar el rollback de la implementación y además tendrá el/los
+                scripts con extensión <strong>.sql</strong> correspondientes). También sobre la carpeta
+                rollback se generará un archivo de log con formato
+                <strong>_rollback_sdm_99999_YYYYMMDD_MMSS.LST</strong>
+
+                <strong>Lista de archivos a implementar</strong> (*ref1) (Lista de archivos con las
+                instrucciones ddl, dml, y dcl, que se quieran implementar sobre la Base de
+                Datos, con extensión “.sql”).
+            </p>
+                
+
+            <h2>
+                Notas
+            </h2>
+            <p>
+                <strong>(*ref1):</strong>
+                * Los nombres de los scripts debe estar en mayúsculas.
+                * No deben contener espacios en blanco.
+                * Utilizar &quot;_&quot; para separar los nombres.
+                * Deben estar numerados de tal forma que pueda ejecutarse tanto el deploy como
+                rollback en forma completa respetando las dependencias entre objetos.
+                * Utilizar la numeración más baja para los scripts nuevos(&quot;CREATE&quot;) de objetos de
+                BD.
+                * Utilizar la numeración más alta para los scripts que se recrean (&quot;CREATE OR
+                REPLACE&quot;).
+
+                <strong>NOTA2:</strong>
+                * Para los script con instrucciones &quot;CREATE, ALTER, GRANTS, INSERT, DELETE y
+                UPDATE&quot; es necesario que el desarrollador cree dentro de la carpeta &quot;rollback&quot; la
+                lista de archivos *.sql para
+                poder realizar el rollback de la implementación con su correspondiente invocación
+                desde el archivo &quot;_rollback_99999.sql&quot;.
+                * Para los scripts CREATE_OR_REPLACE, será el equipo de DBA el encargado de
+                generar los ddl, obteniendo su contendido desde el entorno de producción para
+                realizar el rollback en caso de ser necesario.
+
+                Plantillas de archivos de ejecución.
+                Como pueden notar debajo, las plantillas de los scripts están creadas para poder
+                ser ejecutadas con path’s relativos, para que ustedes puedan hacer sus
+                ejecuciones en los entornos locales apuntando al ambiente de desarrollo.
+
+
+                Contenido para _deploy_99999.sql<br>
+                set echo on<br>
+                set define on<br>
+                accept sdm prompt &quot;Por favor ingrese el número de solicitud de SDM: &quot;<br>
+                -- Obtiene fecha<br>
+                column dcol new_value mydate noprint<br>
+                select &#39;_&#39;||to_char(sysdate,&#39;YYYYMMDD_HH24MI&#39;) dcol from dual;<br>
+                spool _deploy_sdm_&amp;&amp;sdm.&amp;mydate<br>
+                set define off<br>
+                -- Aquí debe enumerar los scripts.sql que desea desplegar sobre la BD.<br>
+                @&quot;.\01-CREATE_TABLE_NNNN.sql&quot;<br>
+                @&quot;.\02-CREATE_INDEX_NNNN.sql&quot;<br>
+                @&quot;.\03-CREATE_CONSTRAINT_NNNN.sql&quot;<br>
+                @&quot;.\04-CREATE_PROCEDURE_NNN.sql&quot;<br>
+                @&quot;.\05-CREATE_FUNCTION_NNN.sql&quot;<br>
+                @&quot;.\06-CREATE_PACKAGE_NNN.sql&quot;<br>
+                @&quot;.\07-CREATE_SEQUENCE_NNN.sql&quot;<br>
+                @&quot;.\08-CREATE_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\09-CREATE_PUBLIC_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\10-CREATE_VIEW_NNN.sql&quot;<br>
+                @&quot;.\11-CREATE_MATERIALIZED_VIEW_NNN.sql&quot;<br>
+                @&quot;.\12-ALTER_TABLE_NNN.sql&quot;<br>
+                @&quot;.\13-GRANTS.sql&quot;<br>
+                @&quot;.\14-INSERTS.sql&quot;<br>
+                @&quot;.\15-DELETES.sql&quot;<br>
+                @&quot;.\16-UPDATES.sql&quot;<br>
+                @&quot;.\100-CREATE_OR_REPLACE_PROCEDURE_NNN.sql&quot;<br>
+                @&quot;.\101-CREATE_OR_REPLACE_FUNCTION_NNN.sql&quot;<br>
+                @&quot;.\102-CREATE_OR_REPLACE_PACKAGE_NNN.sql&quot;<br>
+                @&quot;.\103-CREATE_OR_REPLACE_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\104-CREATE_OR_REPLACE_PUBLIC_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\105-CREATE_OR_REPLACE_VIEW_NNN.sql&quot;<br>
+                spool off<br>
+                <br>
+                <br>
+                Contenido para _rollback_99999.sql<br>
+                set echo on<br>
+                set define on<br>
+                accept sdm prompt &quot;Por favor ingrese el número de solicitud de SDM para hacer el<br>
+                rollback: &quot;<br>
+                -- Obtiene fecha<br>
+                column dcol new_value mydate noprint<br>
+                select &#39;_&#39;||to_char(sysdate,&#39;YYYYMMDD_HH24MI&#39;) dcol from dual;<br>
+                spool _rollback_sdm_&amp;&amp;sdm.&amp;mydate<br>
+                set define off<br>
+                -- Aquí debajo debe enumerar los scripts.sql que desea realizar el rollback de
+                BD.
+                @&quot;.\01-ROLLBACK_DROP_TABLE_NNNN.sql&quot;<br>
+                @&quot;.\02-ROLLBACK_DROP_INDEX_NNNN.sql&quot;<br>
+                @&quot;.\03-ROLLBACK_DROP_CONSTRAINT_NNNN.sql&quot;<br>
+                @&quot;.\04-ROLLBACK_DROP_PROCEDURE_NNN.sql&quot;<br>
+                @&quot;.\05-ROLLBACK_DROP_FUNCTION_NNN.sql&quot;<br>
+                @&quot;.\06-ROLLBACK_DROP_PACKAGE_NNN.sql&quot;<br>
+                @&quot;.\07-ROLLBACK_DROP_PACKAGE_BODY_NNN.sql&quot;<br>
+                @&quot;.\08-ROLLBACK_DROP_SEQUENCE_NNN.sql&quot;<br>
+                @&quot;.\09-ROLLBACK_DROP_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\10-ROLLBACK_DROP_PUBLIC_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\11-ROLLBACK_DROP_VIEW_NNN.sql&quot;<br>
+                @&quot;.\12-ROLLBACK_DROP_MATERIALIZED_VIEW_NNN.sql&quot;<br>
+                @&quot;.\13-ROLLBACK_ALTER_TABLE_NNN.sql&quot;<br>
+                @&quot;.\14-ROLLBACK_REVOKE.sql&quot;<br>
+                @&quot;.\15-ROLLBACK_DELETES.sql&quot;<br>
+                @&quot;.\16-ROLLBACK_INSERTS.sql&quot;<br>
+                @&quot;.\17-ROLLBACK_UPDATES.sql&quot;<br>
+                @&quot;.\100-ROLLBACK_CREATE_OR_REPLACE_PROCEDURE_NNN.sql&quot;<br>
+                @&quot;.\101-ROLLBACK_CREATE_OR_REPLACE_FUNCTION_NNN.sql&quot;<br>
+                @&quot;.\102-ROLLBACK_CREATE_OR_REPLACE_PACKAGE_NNN.sql&quot;<br>
+                @&quot;.\103-ROLLBACK_CREATE_OR_REPLACE_PACKAGE_BODY_NNN.sql&quot;<br>
+                @&quot;.\104-ROLLBACK_CREATE_OR_REPLACE_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\105-ROLLBACK_CREATE_OR_REPLACE_PUBLIC_SYNONYM_NNN.sql&quot;<br>
+                @&quot;.\106-ROLLBACK_CREATE_OR_REPLACE_VIEW_NNN.sql&quot;<br>
+                spool off<br>
+
+                
+                Ejemplo sobre el fileserver:<br>
+                Pueden acceder a la siguiente carpeta<br>
+                \\135.0.0.160\Desarrollo\fs_desarrolladores\Sdm\99999 para ver un ejemplo de como<br>
+                deberían crear sus implementaciones sobre sus pc.<br>
+                <br>
+                Algunas sugerencias respecto a la escritura de las sentencias Sql.<br>
+                <br>
+                 Al crear sinónimos usar: CREATE OR REPLACE &lt;PUBLIC&gt; SYNONYM_NAME FOR<br>
+                OWNER.OBJECT;<br>
+                 Para eliminar un sinónimo usar: DROP &lt;PUBLIC&gt; SYNONYM_NAME;<br>
+                 Al crear bloques anónimos con begin end; siempre en el reglón debajo del<br>
+                end; tienen que colocar el slash (/)<br>
+                 Colocar commit; al final de las sentencias de dml.<br>
+            </p>
+            
+        </main>
+
+        <footer class="mastfoot mt-auto">
+        <div class="inner">
+            <p>Rodocop, el policia mas malvado de Oracle City.</p>
+        </div>
+        </footer>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="/lib/Popper/popper.min.js"></script>
+    <script src="/lib/Bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>

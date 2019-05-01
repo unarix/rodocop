@@ -36,19 +36,31 @@
                 <div class="container">
                     <div class="form-group">
                         <div class="col">
-                            <input type="number" max="9999" id="ticket" class="form-control form-control-sm" placeholder="#ticket" >
+                            
                         </div>
                     </div>
                     
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" >Ticket</span>
+                        </div>
+                        <input type="number" max="9999" id="ticket" class="form-control" placeholder="#" >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="deleteAll()">X</button>
+                        </div>
+                    </div>
+
+
+
                     <div class="row" style="cursor: pointer">
                         <div class="col-sm">
                             <div id="fileBasketQry" class="filebasket">
-                                Querys en orden.
+                                Solta aca los querys en orden.
                             </div>
                         </div>
                         <div class="col-sm">
                             <div id="fileBasketBkp" class="filebasket">
-                                Backups en orden.
+                                Solta aca los rollback en orden.
                             </div>
                         </div>
                     </div>
@@ -63,6 +75,7 @@
         </footer>
 
         <div id="alert_ticket" class="alert alert-danger alert-fixed" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             Completa el numero de ticket antes de cargar scripts o ejecutar el deploy
             <button type="button" class="close" aria-label="Close" onclick="hideAlert()"">
                 <span aria-hidden="true">&times;</span>
@@ -70,6 +83,7 @@
         </div>
 
         <div id="alert_error" class="alert alert-danger alert-fixed" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             <span id="errorMsg"></span>
             <button type="button" class="close" aria-label="Close" onclick="hideAlertError()"">
                 <span aria-hidden="true">&times;</span>
@@ -84,6 +98,11 @@
     <script src="/lib/Bootstrap/js/bootstrap.min.js"></script>
 
     <script>
+        /* Prod */
+        var urlService = "https://a2klab.azurewebsites.net";
+        /* Dev */
+        //var urlService = "https://localhost:5001";
+
         function hideAlert()
         {
             $('#alert_ticket').hide();
@@ -175,9 +194,16 @@
                 if (files.length > 0) {
                     fileNames += "Uploading <br/>"
                     for (var i = 0; i < files.length; i++) {
+                        if(!files[i].name.includes(".sql"))
+                        {
+                            $("#errorMsg").text("Eeeee Amigo! el archivo " + files[i].name + " no es un .sql");
+                            showAlertError();
+                            return;
+                        }
                         fileNames += files[i].name + "<br />";
                     }
                 }
+
                 $("#fileBasketQry").html(fileNames)
 
                 // Agrego los archivos
@@ -190,11 +216,11 @@
                 data.append("ticket", $("#ticket").val())
 
                 // Agrego el folder
-                data.append("folder", "Querys")
+                data.append("folder", "")
 
                 $.ajax({
                     type: "POST",
-                    url: "https://a2klab.azurewebsites.net/api/RodoCop",
+                    url: urlService + "/api/RodoCop",
                     contentType: false,
                     processData: false,
                     data: data,
@@ -226,6 +252,12 @@
                 if (files.length > 0) {
                     fileNames += "Uploading <br/>"
                     for (var i = 0; i < files.length; i++) {
+                        if(!files[i].name.includes(".sql"))
+                        {
+                            $("#errorMsg").text("Eeeee Amigo! el archivo " + files[i].name + " no es un .sql");
+                            showAlertError();
+                            return;
+                        }
                         fileNames += files[i].name + "<br />";
                     }
                 }
@@ -240,11 +272,11 @@
                 data.append("ticket", $("#ticket").val())
 
                 // Agrego el folder
-                data.append("folder", "Backup")
+                data.append("folder", "rollback")
 
                 $.ajax({
                     type: "POST",
-                    url: "https://a2klab.azurewebsites.net/api/RodoCop",
+                    url: urlService + "/api/RodoCop",
                     contentType: false,
                     processData: false,
                     data: data,
@@ -271,14 +303,14 @@
         {
             $.ajax({  
                 type: "GET",  
-                url: "https://a2klab.azurewebsites.net/api/RodoCop/" + $("#ticket").val(),  
+                url:  urlService + "/api/RodoCop/" + $("#ticket").val(),  
                 contentType: "application/json; charset=utf-8",  
                 dataType: "json",  
                 headers : {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'},
                 success: function (data) {  
                     //alert(JSON.stringify(data));                  
-                    var zip_file_path = "https://a2klab.azurewebsites.net/" + data //put inside "" your path with file.zip
-                    var zip_file_name = data //put inside "" file name or something
+                    var zip_file_path = urlService + "/" + data //put inside "" your path with file.zip
+                    var zip_file_name = data 
                     var a = document.createElement("a");
                     document.body.appendChild(a);
                     a.style = "display: none";
@@ -310,6 +342,34 @@
         {
             resetDeployBtn();
         }
+    }
+
+    function deleteAll()
+    {
+        $.ajax({  
+            type: "GET",  
+            url:  urlService + "/api/RodoCop/",  
+            contentType: "application/json; charset=utf-8",  
+            dataType: "json",  
+            headers : {'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'},
+            success: function (data) {  
+                //alert(JSON.stringify(data));
+                $("#errorMsg").text(JSON.stringify(data));
+                showAlertError();
+            },   
+
+            failure: function (data) {  
+                //alert(data.responseText);  
+                $("#errorMsg").text(data.responseText);
+                showAlertError();
+
+            }, 
+            error: function (data) {  
+                //alert(data.responseText);  
+                $("#errorMsg").text(data.responseText);
+                showAlertError();
+            } 
+        });
     }
 
     function resetDeployBtn()
