@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="/lib/favicon.ico">
+        <title>Rodocop 0.1</title>
+        <!-- Bootstrap -->
+        <link href="/lib/Bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/lib/Bootstrap/css/cover.css" rel="stylesheet">
+    </head>
+
+    <body class="text-center">
+        <div class="container">
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="col-6">&nbsp;</div>
+                <div class="col-6">
+                    User..........<input type="text" id="userInput" />
+                    <br />
+                    Message...<input type="text" id="messageInput" />
+                    <input type="button" id="sendButton" value="Send Message" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">&nbsp;</div>
+                <div class="col-6">
+                    <ul id="messagesList"></ul>
+                </div>
+            </div>
+        </div>
+        <script src="/lib/signalr/dist/browser/signalr.js"></script>
+        <script src="/js/chat.js"></script>
+    </body>
+</html>

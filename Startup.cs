@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using rodocop.Hubs;
 
 namespace rodocop
 {
@@ -33,6 +34,8 @@ namespace rodocop
             });
 
             services.AddCors();
+            services.AddSignalR();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +59,10 @@ namespace rodocop
             // });
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
             app.UseDefaultFiles();
             app.UseStaticFiles();
             //app.UseCors(builder => builder.WithOrigins("https://a2klabs.azurewebsites.net", "https://localhost:5001","https://localhost:5002","https://localhost:5003","https://localhost:5004"));

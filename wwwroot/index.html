@@ -30,7 +30,7 @@
         <form method="post" enctype="multipart/form-data">
             <main role="main" class="inner cover">
                 <h1 class="cover-heading">Hola amigo</h1>
-                <p class="lead">Este servicio nos facilita realizar las acciones burocraticas impuestas por Rodo, el policia mas malvado de Oracle City; Mete el numero de ticket, subi los scripts y dale a deploy.</p>
+                <p class="lead">Este servicio nos facilita realizar las acciones burocraticas impuestas por Rodo (alto policeman); Mete el numero de ticket, subi los scripts y dale a deploy.</p>
                 <p class="lead"></p>
 
                 <div class="container">
@@ -89,6 +89,11 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
+
+        <div class="floatMessages">
+            <span id="messagesList"></span>
+        </div>
+
     </div>
 
 
@@ -96,8 +101,40 @@
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="/lib/Popper/popper.min.js"></script>
     <script src="/lib/Bootstrap/js/bootstrap.min.js"></script>
+    <script src="/lib/signalr/dist/browser/signalr.js"></script>
 
     <script>
+        /*
+            CONNECTIONS
+        */
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+
+                
+        connection.on("ReceiveMessage", function (user, message) {
+            var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            var encodedMsg = user + ": " + msg;
+            var span = document.createElement("span");
+            span.textContent = encodedMsg;
+            document.getElementById("messagesList").appendChild(span);
+        });
+
+        connection.start().then(function(){
+            sendPush("Alguien abrio session en " + window.navigator.platform);
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        function sendPush(message)
+        {
+            var user = "Rodocop";
+            connection.invoke("SendMessage", user, message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            event.preventDefault();
+        }
+
+
         /* Prod */
         var urlService = "https://a2klab.azurewebsites.net";
         /* Dev */
@@ -298,7 +335,8 @@
         });
 
     function clickDeploy(){
-        
+        sendPush("Generando deploy " + $("#ticket").val());
+
         if (validateTicket())
         {
             $.ajax({  
@@ -327,13 +365,14 @@
                     $("#errorMsg").text(data.responseText);
                     showAlertError();
                     resetDeployBtn()
-
+                    sendPush(data.responseText);
                 }, 
                 error: function (data) {  
                     //alert(data.responseText);  
                     $("#errorMsg").text(data.responseText);
                     showAlertError();
                     resetDeployBtn()
+                    sendPush(data.responseText);
                 } 
     
             });
@@ -342,10 +381,14 @@
         {
             resetDeployBtn();
         }
+
+        sendPush("Fin deploy " + $("#ticket").val());
     }
 
     function deleteAll()
     {
+        sendPush("Solicitud para borrar cabeceras... ");
+
         $.ajax({  
             type: "GET",  
             url:  urlService + "/api/RodoCop/",  
@@ -356,18 +399,20 @@
                 //alert(JSON.stringify(data));
                 $("#errorMsg").text(JSON.stringify(data));
                 showAlertError();
+                sendPush("Cabeceras borradas; Si estaba generando un deploy debe volver a comenzar.");
             },   
 
             failure: function (data) {  
                 //alert(data.responseText);  
                 $("#errorMsg").text(data.responseText);
                 showAlertError();
-
+                sendPush(data.responseText);
             }, 
             error: function (data) {  
                 //alert(data.responseText);  
                 $("#errorMsg").text(data.responseText);
                 showAlertError();
+                sendPush(data.responseText);
             } 
         });
     }
