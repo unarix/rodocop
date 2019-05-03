@@ -21,7 +21,6 @@
                 <h3 class="masthead-brand">Rodocop</h3>
                 <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link active" href="index.html">Home</a>
-                <a class="nav-link" href="botonaso.html">Rodokiller</a>
                 <a class="nav-link" href="https://a2klab.azurewebsites.net/">a2kLab</a>
                 </nav>
             </div>
@@ -30,7 +29,7 @@
         <form method="post" enctype="multipart/form-data">
             <main role="main" class="inner cover">
                 <h1 class="cover-heading">Hola amigo</h1>
-                <p class="lead">Este servicio nos facilita realizar las acciones burocraticas impuestas por Rodo (alto policeman); Mete el numero de ticket, subi los scripts y dale a deploy.</p>
+                <p class="lead">Este servicio nos facilita realizar las acciones burocraticas impuestas por Rodo; Mete el numero de ticket, subi los scripts y dale a deploy.</p>
                 <p class="lead"></p>
 
                 <div class="container">
@@ -105,33 +104,33 @@
 
     <script>
         /*
-            CONNECTIONS
+            SIGNAL-IR CONNECTIONS
         */
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+        // var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
                 
-        connection.on("ReceiveMessage", function (user, message) {
-            var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            var encodedMsg = user + ": " + msg;
-            var span = document.createElement("span");
-            span.textContent = encodedMsg;
-            document.getElementById("messagesList").appendChild(span);
-        });
+        // connection.on("ReceiveMessage", function (user, message) {
+        //     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        //     var encodedMsg = user + ": " + msg;
+        //     var span = document.createElement("span");
+        //     span.textContent = encodedMsg;
+        //     document.getElementById("messagesList").appendChild(span);
+        // });
 
-        connection.start().then(function(){
-            sendPush("Alguien abrio session en " + window.navigator.platform);
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
+        // connection.start().then(function(){
+        //     sendPush("Alguien abrio session en " + window.navigator.platform);
+        // }).catch(function (err) {
+        //     return console.error(err.toString());
+        // });
 
         function sendPush(message)
         {
-            var user = "Rodocop";
-            connection.invoke("SendMessage", user, message).catch(function (err) {
-                return console.error(err.toString());
-            });
-            event.preventDefault();
+            // var user = "Rodocop";
+            // connection.invoke("SendMessage", user, message).catch(function (err) {
+            //     return console.error(err.toString());
+            // });
+            // event.preventDefault();
         }
 
 
