@@ -18,7 +18,7 @@
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
         <header class="masthead mb-auto">
             <div class="inner">
-                <h3 class="masthead-brand">Rodocop</h3>
+                <h3 class="masthead-brand" onclick="rodokiller();">Rodocop</h3>
                 <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link active" href="index.html">Home</a>
                 <a class="nav-link" href="https://a2klab.azurewebsites.net/">a2kLab</a>
@@ -133,6 +133,15 @@
             // event.preventDefault();
         }
 
+        var killer = 0;
+        function rodokiller()
+        {
+            killer = killer + 1
+            if (killer>10)
+            {
+                window.location.href = "https://rodocop.azurewebsites.net/botonaso.html";
+            }
+        }
 
         /* Prod */
         var urlService = "https://a2klab.azurewebsites.net";
