@@ -50,6 +50,10 @@
               "target": "Package",
               "version": "[2.1.2, )"
             },
+            "Microsoft.Azure.SignalR": {
+              "target": "Package",
+              "version": "[1.0.9, )"
+            },
             "Microsoft.NETCore.App": {
               "target": "Package",
               "version": "[2.1.0, )",

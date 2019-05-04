@@ -100,38 +100,58 @@
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="/lib/Popper/popper.min.js"></script>
     <script src="/lib/Bootstrap/js/bootstrap.min.js"></script>
-    <script src="/lib/signalr/dist/browser/signalr.js"></script>
+    <!--script src="/lib/signalr/dist/browser/signalr.js"></script-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
 
     <script>
-        /*
-            SIGNAL-IR CONNECTIONS
+
+        /* 
+        ---------------------------------------------------
+            SIGNAL IR AS SAS DE AZURE
+        ---------------------------------------------------
         */
 
-        // var connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
+        var connection = new signalR.HubConnectionBuilder().withUrl('/chat').build();
+        
+        bindConnectionMessage(connection);
 
-                
-        // connection.on("ReceiveMessage", function (user, message) {
-        //     var msg = message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        //     var encodedMsg = user + ": " + msg;
-        //     var span = document.createElement("span");
-        //     span.textContent = encodedMsg;
-        //     document.getElementById("messagesList").appendChild(span);
-        // });
-
-        // connection.start().then(function(){
-        //     sendPush("Alguien abrio session en " + window.navigator.platform);
-        // }).catch(function (err) {
-        //     return console.error(err.toString());
-        // });
+        connection.start().then(function () {
+            sendPush("Alguien abrio session en " + window.navigator.platform);
+        })
+        .catch(function (error) {
+            console.error(error.message);
+        });
 
         function sendPush(message)
-        {
-            // var user = "Rodocop";
-            // connection.invoke("SendMessage", user, message).catch(function (err) {
-            //     return console.error(err.toString());
-            // });
-            // event.preventDefault();
+        {           
+            var name = "Rodocop";
+            connection.send('broadcastMessage', name, message).catch(function (err) {
+                return console.error(err.toString());
+            });
         }
+
+        function bindConnectionMessage(connection) {
+                var messageCallback = function(name, message) {
+                    var encodedMsg =  name + ": " + message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    var span = document.createElement("span");
+                    span.textContent = encodedMsg;
+                    document.getElementById("messagesList").appendChild(span);
+                            
+                };
+                connection.on('broadcastMessage', messageCallback);
+                connection.on('echo', messageCallback);
+            }
+
+        /* 
+        ---------------------------------------------------
+            FIN SIGNAL IR AS SAS DE AZURE
+        ---------------------------------------------------
+        */
+
+
+
+
+
 
         var killer = 0;
         function rodokiller()

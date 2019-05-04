@@ -34,8 +34,8 @@ namespace rodocop
             });
 
             services.AddCors();
-            services.AddSignalR();
-
+            //services.AddSignalR();
+            services.AddSignalR().AddAzureSignalR("Endpoint=https://a2k.service.signalr.net;AccessKey=5Z9orfXe/d9gQEv0rC8Qd0zxXY0vVfV0cD9xwsqL3+s=;Version=1.0;");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,20 +52,25 @@ namespace rodocop
                 app.UseHsts();
             }
 
-
-            // app.Run(async (context) =>
-            // {
-            //     await context.Response.WriteAsync("Hello World!");
-            // });
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
-            app.UseSignalR(routes =>
+            
+            // Signal IR tradicional
+            // app.UseSignalR(routes =>
+            // {
+            //     routes.MapHub<ChatHub>("/chatHub");
+            // });
+
+            // Singal IR SAS en Azure
+            // Azure SignalR service
+            app.UseFileServer();
+            app.UseAzureSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<Chat>("/chat");
             });
+
             app.UseDefaultFiles();
-            app.UseStaticFiles();
-            //app.UseCors(builder => builder.WithOrigins("https://a2klabs.azurewebsites.net", "https://localhost:5001","https://localhost:5002","https://localhost:5003","https://localhost:5004"));
+            //app.UseStaticFiles();
         }
     }
 }
