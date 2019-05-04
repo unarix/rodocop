@@ -275,6 +275,7 @@
                 var data = new FormData();
                 for (var i = 0; i < files.length; i++) {
                     data.append(files[i].name, files[i]);
+                    sendPush( "-->" + files[i].name);
                 }
 
                 // Agrego el numero de ticket
@@ -291,6 +292,7 @@
                     data: data,
                     success: function (message) {
                         $("#fileBasketQry").html(message);
+                        sendPush(" --> " + message)
                     },
                     error: function () {
                         $("#fileBasketQry").html
