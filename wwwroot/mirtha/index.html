@@ -1,0 +1,369 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+	<style>
+		.fixed {
+		  position: fixed;
+		  z-index: 10;
+		  width: 100%;
+		  top:0;
+		}
+
+		#example tbody tr {
+			cursor: pointer;
+		}
+
+	</style>
+</head>
+
+<body>
+	<div class="jumbotron text-center">
+		<div class="row">
+	  		<div class="col"><h1><img height="100px" src="http://www.aa2000.com.ar/img/asistente.png">Mirtha!</h1>
+	  		<div id="mensaje" class="alert alert-success fixed"></div>
+	  	</div>
+		</div>
+	</div>
+
+	<div class="container">
+	<div class="jumbotron">
+			<div class="form-group">
+				<label for="transcript"><strong>Soy Mirtha!</strong> Ingresa texto para que lo repita o hace click en preguntar para saber el estado de un vuelo... </label>
+
+				<div class="input-group">
+					<input type="text" class="form-control" name="q" id="transcript" placeholder="Ejemplo: Buscar vuelo 'AR1234'" />
+					<span class="input-group-btn">
+						<button type="button" class="btn" onclick="Dictation()">Preguntar</button>
+						<button type="button" class="btn btn-primary" onclick="anuncar($('#transcript').val())">Hablar</button>
+						<button class="btn btn-success" data-toggle="collapse" data-target="#demo">Ver vuelos</button>		
+					</span>
+				</div>
+
+				<div id="demo" class="collapse">
+					<br>
+					<table id="example"  class="display" width="100%">
+				        <thead>
+			            	<tr>
+			            	<th>Vuelo</th>
+							<th>Origen/Destino</th>
+							<th>Estado</th>
+			            	</tr>
+			        	</thead>
+		        	</table>
+				</div>
+
+			</div>
+
+	</div>
+	</div>
+</body>
+
+<!-- HTML5 Reconocimiento de voz para vuelos locos -->
+<script>
+
+	speak('Hola... Mi nombre es Mirtha.');
+
+	// Carga la grilla de vuelos.
+	loadVuelos();
+
+	// Anuncia con un belt el texto a decir!
+	function anuncar(text)
+	{
+		var audio = new Audio('1.mp3');
+		audio.play();
+
+		setTimeout(function(){
+	    	speak(text);
+		}, 1000);
+	}
+
+  	// Habla en español
+  	function speak(text, callback) {
+
+	  	if(text.length>1)
+		{
+			// Solo muestro el mensaje si el texto es mas largo que 22 caracteres....
+			if(text.length>22) messagebox(text);
+
+			var u = new SpeechSynthesisUtterance();
+			u.text = text;
+			u.lang = 'es-US';
+			u.volume = 1;
+			u.rate = 1;
+			u.pitch = 1;
+
+			u.onend = function () {
+			  if (callback) {
+			      callback();
+			  }
+			};
+
+			u.onerror = function (e) {
+			  if (callback) {
+			      callback(e);
+			  }
+			};
+
+			speechSynthesis.speak(u);
+		}
+		else
+		{
+			speak("No tengo nada para decir!")
+		}
+
+ 	}
+  
+ 	// Habla en ingles
+	function speakEn(text, callback) 
+	{
+		if(text.length>1)
+		{
+
+			//messagebox(text,text.length*70);
+
+			var u = new SpeechSynthesisUtterance();
+			u.text = text;
+			u.lang = 'en-US';
+			u.volume = 1;
+			u.rate = 1;
+			u.pitch = 1;
+
+			u.onend = function () {
+			  if (callback) {
+			      callback();
+			  }
+			};
+
+			u.onerror = function (e) {
+			  if (callback) {
+			      callback(e);
+			  }
+			};
+
+			speechSynthesis.speak(u);
+		}
+	}
+
+	// Escucha un dictado
+	function Dictation()
+	{
+		speak("Ok... dime!");
+
+		setTimeout(function(){
+	    	startDictation();
+		}, 1000);
+	}
+
+	// Comienza a hablar un dictado!
+  	function startDictation() 
+  	{
+    
+	    console.log("entro al metodo de startDictation");
+
+	    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+	      
+	      console.log("El navegador, dispone de webkitSpeechRecognition");
+	      var recognition = new webkitSpeechRecognition();
+
+	      recognition.continuous = false;
+	      recognition.interimResults = false;
+
+	      recognition.lang = "es-US";
+	      recognition.start();
+
+	      recognition.onresult = function(e) {
+	        var nahueVoice = e.results[0][0].transcript.toLowerCase();
+	        recognition.stop();
+
+	        console.log(nahueVoice.replace("buscar vuelo", "").replace("buscar un vuelo", "").replace(/ /g,'').toUpperCase().length);
+
+	        if((nahueVoice.includes("buscar vuelo") || nahueVoice.includes("buscar un vuelo")) && !(nahueVoice.replace("buscar vuelo", "").replace("buscar un vuelo", "").replace(/ /g,'').toUpperCase().length > 7))
+	        {
+	          document.getElementById('transcript').value = nahueVoice.replace("buscar vuelo", "").replace("buscar un vuelo", "").replace(/ /g,'').toUpperCase();
+	          speak("Buscando el vuelo " + document.getElementById('transcript').value, buscar);
+	        }
+	        else
+	        {
+	          speak("Todavia no entiendo comandos del tipo: " + nahueVoice);
+	          document.getElementById('transcript').value = "";
+	        }
+	        
+	      };
+
+	      recognition.onerror = function(e) {
+	        recognition.stop();
+	        console.log(e);
+	      }
+
+	    }
+	}
+
+	function buscar()
+	{
+		//document.getElementById('labnol').submit();
+		var vuelo = document.getElementById('transcript').value;
+		var n = vuelo.length;
+		console.log(n);
+
+		if(n > 4)
+		{
+			vuelos(vuelo.substring(0, 2), vuelo.substring(2));
+	  	}
+	  	else
+	    	speak("Lo siento, esa es muy poca informacion para la busqueda.");
+	}
+
+	function setHeader(xhr) 
+	{
+		xhr.setRequestHeader("Access-Control-Allow-Origin", "localhost, azurewebsites.net");
+		xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
+    	xhr.setRequestHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    	xhr.setRequestHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+		xhr.setRequestHeader('key', 'ZDNhpjQEXca52NYZUsSVjnDkmYjkTcdl');
+		//xhr.setRequestHeader('key', 'D8EMcmabT+P6Ir9U+JQl/vDKQ3bcc8ag');
+	}
+
+	function vuelos(v_iata, v_flight)
+	{
+		console.log("buscando vuelo: " + v_iata + v_flight)
+		$.ajax({
+			url : 'http://api.aa2000.com.ar/api/Vuelos?dairline=' + v_iata + '&flight=' + v_flight,
+			type : 'GET',
+			async: false,
+			crossDomain: true,
+			dataType : 'json',
+			//processData: true,
+			contentType : 'application/json',
+			
+			success : function(data) 
+			{
+				console.log(data);
+
+				speak("Su atencion por favor.");
+
+				if(data[0].mov == "D")
+				{
+					speak( "Le informamos que el vuelo " + data[0].nro + ", de " +  data[0].aerolinea.toLowerCase() + ", con destino " + data[0].destorig.replace(">", " via ") + ", se encuentra en estado, " + data[0].estes + ". Repetimos, " + data[0].estes + ".");
+				}
+				else
+				{
+					speak("Le informamos que el vuelo " + data[0].nro + ", de " +  data[0].aerolinea.toLowerCase() + ", con origen " + data[0].destorig.replace(">", " via ") + ", se encuentra en estado, " + data[0].estes + ". Repetimos, " + data[0].estes + ".");
+				}
+
+				console.log(data[0]);
+
+				speakEn("Your attention please.");
+
+				if(data[0].mov == "D")
+				{
+					speakEn( "The flight " + data[0].nro + ", of " +  data[0].aerolinea.toLowerCase() + ", with destiny " + data[0].destorig.replace(">", " via ") + ", is in state, " + data[0].estin + ". Repeat: " + data[0].estin);
+				}
+				else
+				{
+					speakEn("The flight" + data[0].nro + ", of " +  data[0].aerolinea.toLowerCase() + ", with origin " + data[0].destorig.replace(">", " via ") + ", is in state, " + data[0].estin + ". Repeat: " + data[0].estin);
+				}
+
+
+			},
+			error : function() 
+			{
+				console.log('error');
+			},
+			beforeSend : setHeader
+		});
+	}
+
+
+	const getVoices = () => {
+	  return new Promise(resolve => {
+	    let voices = speechSynthesis.getVoices()
+	    if (voices.length) {
+	      resolve(voices)
+	      return
+	    }
+	    speechSynthesis.onvoiceschanged = () => {
+	      voices = speechSynthesis.getVoices()
+	      resolve(voices)
+	    }
+	  })
+	}
+
+	const printVoicesList = async () => {
+	  ;(await getVoices()).forEach(voice => {
+	    console.log(voice.name, voice.lang)
+	  })
+	}
+
+	//printVoicesList()
+
+	function messagebox(msg, delay)
+	{
+		if (delay==null)
+			delay=msg.length*90;
+
+		console.log(msg + "/" + msg.length + "/" +  delay);
+
+		$("#mensaje").html(msg);
+		$("#mensaje").show().delay(delay).fadeOut();
+	}
+
+
+	// Este codigo es para detectar el enter y que repita lo que metieron en el textbox
+	var wage = document.getElementById("transcript");
+
+	wage.addEventListener("keydown", function (e) {
+	    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+	        anuncar($('#transcript').val());
+	    }
+	});
+
+	// esto es para asignar el focus ni bien entro.
+	document.getElementById("transcript").focus();
+
+	// Cargo los vuelos
+	var table;
+	function loadVuelos()
+	{
+		 table = $('#example').DataTable({
+		    ajax: {
+		        url : 'http://api.aa2000.com.ar/api/Vuelos?idarpt=EZE&desde=0&c=30&movtp=D',
+				type : 'GET',
+				async: false,
+				crossDomain: true,
+				dataType : 'json',
+				contentType : 'application/json',
+		        dataSrc: '',
+		        beforeSend : setHeader
+		    },
+		    columns: [
+		      { data: "nro" },
+		      { data: "destorig" },
+		      { data: "estes" }
+		    ]
+		});
+
+
+	}
+
+	// Asigno la accion a realizar cuando se hace click en un item de la grilla...
+	$('#example tbody').on( 'click', 'tr', function () {
+	    var datax = table.row( this ).data();
+
+		var audio = new Audio('1.mp3');
+		audio.play();
+
+		setTimeout(function(){
+	    	vuelos(datax.nro.substring(0, 2), datax.nro.substring(2));
+		}, 1000);
+
+	} );
+
+
+</script>
+</html>

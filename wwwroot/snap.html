@@ -1,0 +1,106 @@
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="/lib/favicon.ico">
+        <title>Rodocop 0.1</title>
+        <!-- Bootstrap -->
+        <link href="/lib/Bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/lib/Bootstrap/css/cover.css" rel="stylesheet">
+    </head>
+
+  <body class="text-center">
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <h3 class="masthead-brand">#Snap</h3>
+                <nav class="nav nav-masthead justify-content-center">
+                <a class="nav-link" href="snaphow.html">snapShow</a>
+                <a class="nav-link" href="https://a2klab.azurewebsites.net/">a2kLab</a>
+                </nav>
+            </div>
+        </header>
+
+        <main role="main" class="inner cover" style="width: 700px;">
+            <div id="my_camera"></div>
+            <div id="results"></div>
+        </main>
+
+        <footer class="mastfoot mt-auto">
+            <p class="lead" id="btnDeploy">
+                <a style="color:dimgrey" onclick="take_snapshot()" class="btn btn-lg btn-secondary">Hacer snapshow!</a>
+            </p>
+        </footer>
+    </div>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="/lib/Popper/popper.min.js"></script>
+    <script src="/lib/Bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/snap/webcam.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
+
+	
+	<!-- Configure a few settings and attach camera -->
+	<script language="JavaScript">
+		Webcam.set({
+			height: 400,
+			image_format: 'jpeg',
+			jpeg_quality: 100
+		});
+		Webcam.attach( '#my_camera' );
+	</script>
+	
+	<!-- Code to handle taking the snapshot and displaying it locally -->
+	<script language="JavaScript">
+
+        /* Prod */
+        //var urlService = "https://a2klab.azurewebsites.net";
+        /* Dev */
+        var urlService = "https://localhost:5001";
+
+
+		function take_snapshot() {
+			// take snapshot and get image data
+			Webcam.snap( function(data_uri) {
+				// display results in page
+				document.getElementById('results').innerHTML = '<img id="base64image" src="'+data_uri+'"/>';
+                $("#my_camera").hide();
+            } );
+            
+            var file = document.getElementById("base64image").src;
+
+            console.log("Enviando el snap a la api... ");
+
+            var dataJSON = {
+                            "name": "imagen1",
+                            "base64image": file
+                            }
+
+            $.ajax({
+                type: 'POST',
+                url:  urlService + "/api/Snap/",  
+                data: JSON.stringify(dataJSON),
+                contentType: "application/json; charset=utf-8",  
+                dataType: "json",  
+                headers : {'Content-Type' : 'application/json-patch+json'},
+                success: function (message) {
+                    alert(message);
+                },
+                error: function (data) { 
+                    alert(data.responseText);  
+                }
+            });
+		}
+	</script>
+
+  </body>
+</html>

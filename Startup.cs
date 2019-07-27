@@ -33,7 +33,7 @@ namespace rodocop
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddCors();
+            //services.AddMvc();
             //services.AddSignalR();
             services.AddSignalR().AddAzureSignalR("Endpoint=https://a2k.service.signalr.net;AccessKey=5Z9orfXe/d9gQEv0rC8Qd0zxXY0vVfV0cD9xwsqL3+s=;Version=1.0;");
         }
@@ -55,10 +55,10 @@ namespace rodocop
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             
-            // Signal IR tradicional
-            // app.UseSignalR(routes =>
-            // {
-            //     routes.MapHub<ChatHub>("/chatHub");
+            // app.UseMvc(routes => {
+            // routes.MapRoute(
+            // name: "default",
+            // template: "{controller=snap}/{action=Index}/{id?}");
             // });
 
             // Singal IR SAS en Azure
@@ -71,6 +71,8 @@ namespace rodocop
 
             app.UseDefaultFiles();
             //app.UseStaticFiles();
+
+            //app.UseMvc();
         }
     }
 }
