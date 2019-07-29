@@ -2,7 +2,9 @@
 
 <head>
 	<meta name="robots" content="noindex, nofollow">
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -19,50 +21,82 @@
 		#example tbody tr {
 			cursor: pointer;
 		}
+		.bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
 
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
 	</style>
 </head>
 
 <body>
-	<div class="jumbotron text-center">
-		<div class="row">
-	  		<div class="col"><h1><img height="100px" src="http://www.aa2000.com.ar/img/asistente.png">Mirtha!</h1>
-	  		<div id="mensaje" class="alert alert-success fixed"></div>
-	  	</div>
-		</div>
-	</div>
-
-	<div class="container">
-	<div class="jumbotron">
-			<div class="form-group">
-				<label for="transcript"><strong>Soy Mirtha!</strong> Ingresa texto para que lo repita o hace click en preguntar para saber el estado de un vuelo... </label>
-
-				<div class="input-group">
-					<input type="text" class="form-control" name="q" id="transcript" placeholder="Ejemplo: Buscar vuelo 'AR1234'" />
-					<span class="input-group-btn">
-						<button type="button" class="btn" onclick="Dictation()">Preguntar</button>
-						<button type="button" class="btn btn-primary" onclick="anuncar($('#transcript').val())">Hablar</button>
-						<button class="btn btn-success" data-toggle="collapse" data-target="#demo">Ver vuelos</button>		
-					</span>
+	<div id="mensaje" class="alert alert-success fixed"></div>
+	<main role="main" class="flex-shrink-0">
+			<div class="container">
+			<div class="jumbotron text-center">
+				<div class="row">
+					<div class="col">
+						<h1><img height="100px" src="http://www.aa2000.com.ar/img/asistente.png">Mirtha!</h1>
+						
+						
+					</div>
 				</div>
-
-				<div id="demo" class="collapse">
-					<br>
-					<table id="example"  class="display" width="100%">
-				        <thead>
-			            	<tr>
-			            	<th>Vuelo</th>
-							<th>Origen/Destino</th>
-							<th>Estado</th>
-			            	</tr>
-			        	</thead>
-		        	</table>
-				</div>
-
 			</div>
 
-	</div>
-	</div>
+		
+			<div class="jumbotron">
+					<div class="form-group">
+
+						<div class="input-group">
+							
+						</div>
+
+						<label for="transcript"><strong>Soy Mirtha!</strong> Ingresa texto para que lo repita o hace click en preguntar para saber el estado de un vuelo... </label>
+
+						<div class="input-group">
+							<input type="text" class="form-control" name="q" id="transcript" placeholder="Ejemplo: Buscar vuelo 'AR1234'" />
+							<span class="input-group-btn">
+								<button type="button" class="btn" onclick="Dictation()">Preguntar</button>
+								<button type="button" class="btn btn-primary" onclick="anuncar($('#transcript').val())">Hablar</button>
+								<button class="btn btn-success" onclick="loadVuelos()" data-toggle="collapse" data-target="#demo">Ver vuelos</button>		
+							</span>
+						</div>
+
+						<div id="demo" class="collapse">
+							<br>
+							<table id="example"  class="display" width="100%">
+								<thead>
+									<tr>
+									<th>Vuelo</th>
+									<th>Origen/Destino</th>
+									<th>Estado</th>
+									</tr>
+								</thead>
+							</table>
+						</div>
+
+					</div>
+
+			</div>
+		</div>
+
+	</main>
+	<footer class="footer mt-auto py-3">
+		<div class="container">
+			<span class="text-muted">Para que <b>Mirtha</b> funcione, necesitas agregar una key de A2Kapi con acceso al servicio de vuelos. A2Kapi no permite llamadas de origins desconocidos, por tanto debes desactivar la proteccion del navegador: Una buena forma de hacerlo es descargando la extencion de chrome "cross-origine *" </span>
+			<br><br>
+			<input type="text" class="form-control" name="q" id="keyval" placeholder="Ingresa una key valida con acceso al servicio de vuelos." />  
+		</div>
+	</footer>
 </body>
 
 <!-- HTML5 Reconocimiento de voz para vuelos locos -->
@@ -226,7 +260,7 @@
 		xhr.setRequestHeader("Access-Control-Allow-Credentials", "true");
     	xhr.setRequestHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     	xhr.setRequestHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
-		xhr.setRequestHeader('key', 'xx');
+		xhr.setRequestHeader('key', document.getElementById('keyval').value);
 	}
 
 	function vuelos(v_iata, v_flight)
@@ -327,26 +361,40 @@
 	document.getElementById("transcript").focus();
 
 	// Cargo los vuelos
+	var loaded = false;
 	var table;
 	function loadVuelos()
 	{
-		 table = $('#example').DataTable({
-		    ajax: {
-		        url : 'http://api.aa2000.com.ar/api/Vuelos?idarpt=EZE&desde=0&c=30&movtp=D',
-				type : 'GET',
-				async: false,
-				crossDomain: true,
-				dataType : 'json',
-				contentType : 'application/json',
-		        dataSrc: '',
-		        beforeSend : setHeader
-		    },
-		    columns: [
-		      { data: "nro" },
-		      { data: "destorig" },
-		      { data: "estes" }
-		    ]
-		});
+		if(document.getElementById('keyval').value != "")
+		{
+			if(loaded != true)
+			{
+				table = $('#example').DataTable({
+					ajax: {
+						url : 'http://api.aa2000.com.ar/api/Vuelos?idarpt=EZE&desde=0&c=30&movtp=D',
+						type : 'GET',
+						async: false,
+						crossDomain: true,
+						dataType : 'json',
+						contentType : 'application/json',
+						dataSrc: '',
+						beforeSend : setHeader
+					},
+					columns: [
+					{ data: "nro" },
+					{ data: "destorig" },
+					{ data: "estes" }
+					]
+				});
+
+				loaded = true;
+			}
+		}
+		else
+		{
+			messagebox("No puedo funcionar sin una api key de a2k. Por favor, ingresa una en el cuadro de texto debajo... ",10)
+			speak("No puedo funcionar sin una api key de a2k. Por favor, ingresa una en el cuadro de texto debajo... ")
+		}
 
 
 	}
